@@ -90,7 +90,6 @@ function App() {
   const [adminData, setAdminData] = useState<AdminData | null>(null)
   const [adminBusy, setAdminBusy] = useState(false)
   const [adminCreateEmail, setAdminCreateEmail] = useState('')
-  const [adminCreatePlan, setAdminCreatePlan] = useState('standard_lifetime')
   const [adminCreateDays, setAdminCreateDays] = useState('')
   const [adminCreatePremium, setAdminCreatePremium] = useState(false)
 
@@ -347,7 +346,6 @@ function App() {
   const adminCreateLicense = async () => {
     await adminAction('/api/admin/licenses/create', {
       email: adminCreateEmail || null,
-      planId: adminCreatePlan,
       days: adminCreateDays ? Number(adminCreateDays) : null,
       premium: adminCreatePremium,
     })
@@ -725,11 +723,17 @@ function App() {
                     <p>Create a license manually and optionally link it to an existing user email.</p>
                     <div className="eqy-password-panel">
                       <input value={adminCreateEmail} onChange={(e) => setAdminCreateEmail(e.target.value)} placeholder="User email optional" />
-                      <select value={adminCreatePlan} onChange={(e) => setAdminCreatePlan(e.target.value)}>
-                        {[...standardPlans, ...premiumPlans].map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+                      <select value={adminCreatePremium ? 'premium' : 'standard'} onChange={(e) => setAdminCreatePremium(e.target.value === 'premium')}>
+                        <option value="standard">Standard / Non premium</option>
+                        <option value="premium">Premium</option>
                       </select>
-                      <input value={adminCreateDays} onChange={(e) => setAdminCreateDays(e.target.value)} placeholder="Days optional, empty = lifetime" />
-                      <label className="eqy-admin-check"><input type="checkbox" checked={adminCreatePremium} onChange={(e) => setAdminCreatePremium(e.target.checked)} /> Premium access</label>
+                      <input
+                        value={adminCreateDays}
+                        onChange={(e) => setAdminCreateDays(e.target.value.replace(/[^0-9]/g, ''))}
+                        placeholder="Days, empty = lifetime"
+                        inputMode="numeric"
+                      />
+                      <p className="eqy-admin-helper">Choose Standard or Premium, then set how many days the license lasts. Leave days empty for lifetime.</p>
                       <button disabled={adminBusy} onClick={() => void adminCreateLicense()} className="eqy-v5-primary">Create License</button>
                     </div>
                   </div>
