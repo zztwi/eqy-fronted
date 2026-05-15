@@ -200,11 +200,20 @@ function App() {
       try {
         const data = await api('/api/paypal/create-order', {
           method: 'POST',
-          headers: authHeaders,
+          headers: {
+            ...authHeaders,
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({ planId }),
         })
+
+        if (!data?.approvalUrl) {
+          throw new Error('PayPal approval URL missing.')
+        }
+
         window.location.href = data.approvalUrl
       } catch (e) {
+        console.error(e)
         setMessage((e as Error).message)
       }
     })
