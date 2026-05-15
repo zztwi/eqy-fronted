@@ -23,9 +23,9 @@ h1, h2, h3, strong { font-family: Sora, Inter, sans-serif; }
 @keyframes eqyFloat { 0%, 100% { transform: translate3d(0,0,0); } 50% { transform: translate3d(0,-18px,0); } }
 
 .eqy-v5-root { min-height: 100vh; color: var(--eqy-text); position: relative; overflow-x: hidden; background: #02040a; }
-.eqy-v5-bg { position: fixed; inset: 0; z-index: 0; background-image: linear-gradient(180deg, rgba(1, 4, 12, .16), rgba(2, 4, 10, .92) 76%, #02040a), url('/eqy-world-bg.svg'); background-size: cover; background-position: center top; transform: scale(1.01); }
-.eqy-v5-bg::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 70% 18%, rgba(16, 118, 255, .38), transparent 26%), radial-gradient(circle at 48% 40%, rgba(56, 189, 248, .14), transparent 30%), linear-gradient(90deg, rgba(2,4,10,.22), transparent 38%, rgba(2,4,10,.24)); mix-blend-mode: screen; }
-.eqy-v5-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(2,4,10,.2), rgba(2,4,10,.4) 48%, #02040a 94%); }
+.eqy-v5-bg { pointer-events: none; position: fixed; inset: 0; z-index: 0; background-image: linear-gradient(180deg, rgba(1, 4, 12, .16), rgba(2, 4, 10, .92) 76%, #02040a), url('/eqy-world-bg.svg'); background-size: cover; background-position: center top; transform: scale(1.01); }
+.eqy-v5-bg::before { pointer-events: none; content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 70% 18%, rgba(16, 118, 255, .38), transparent 26%), radial-gradient(circle at 48% 40%, rgba(56, 189, 248, .14), transparent 30%), linear-gradient(90deg, rgba(2,4,10,.22), transparent 38%, rgba(2,4,10,.24)); mix-blend-mode: screen; }
+.eqy-v5-bg::after { pointer-events: none; content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(2,4,10,.2), rgba(2,4,10,.4) 48%, #02040a 94%); }
 .eqy-v5-stars { pointer-events:none; position: fixed; inset: 0; z-index: 1; opacity: .24; background-image: radial-gradient(circle, rgba(255,255,255,.75) 0 1px, transparent 1.2px); background-size: 48px 48px; mask-image: linear-gradient(to bottom, black, transparent 85%); }
 .eqy-v5-vignette { pointer-events:none; position: fixed; inset: 0; z-index: 2; background: radial-gradient(circle at center top, transparent 0 38%, rgba(0,0,0,.24) 62%, rgba(0,0,0,.72) 100%), linear-gradient(90deg, rgba(0,0,0,.42), transparent 22%, transparent 78%, rgba(0,0,0,.48)); }
 
@@ -152,3 +152,5 @@ h1, h2, h3, strong { font-family: Sora, Inter, sans-serif; }
   .eqy-v5-hero h1 { font-size: 50px; }
   .eqy-v5-plan-grid { grid-template-columns:1fr; }
 }
+
+.eqy-v5-primary, .eqy-v5-ghost, .eqy-v5-outline, .eqy-v5-cta, .eqy-v5-sign { position: relative; z-index: 10; pointer-events: auto; }

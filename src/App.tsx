@@ -235,7 +235,7 @@ function App() {
                 <p>EQY Tweak is a premium optimization tool that boosts FPS, reduces latency and gives you the competitive edge.</p>
                 <div className="eqy-v5-actions">
                   <button onClick={() => setPage('pricing')} className="eqy-v5-primary">↯ View Plans</button>
-                  <button onClick={() => protectedDownload('exe')} className="eqy-v5-ghost">▷ See It In Action</button>
+                  <button onClick={() => setPage('download')} className="eqy-v5-ghost">▷ See It In Action</button>
                 </div>
                 <div className="eqy-v5-feature-row">
                   {['FPS BOOST', 'LOWER LATENCY', 'SYSTEM OPTIMIZATION', 'EASY TO USE'].map((item, idx) => (
