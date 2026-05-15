@@ -163,3 +163,13 @@ h1, h2, h3, strong { font-family: Sora, Inter, sans-serif; }
 .eqy-v4-brand { border-radius: 20px; color: #fff; }
 .eqy-license-list p { color: #94a3b8; }
 footer button { color:#8dc2ff; }
+
+/* FORCE HUD RESTORE - critical utilities */
+html,body,#root{min-height:100%;margin:0;background:#02040a!important;color:#f8fbff!important;font-family:Inter,sans-serif;}
+.min-h-screen{min-height:100vh!important}.overflow-hidden{overflow:hidden!important}.relative{position:relative!important}.z-10{position:relative;z-index:10!important}.mx-auto{margin-left:auto!important;margin-right:auto!important}.max-w-\[1280px\]{max-width:1280px!important}.px-6{padding-left:1.5rem!important;padding-right:1.5rem!important}.pb-24{padding-bottom:6rem!important}.pt-14{padding-top:3.5rem!important}.py-8{padding-top:2rem!important;padding-bottom:2rem!important}.flex{display:flex!important}.justify-between{justify-content:space-between!important}.border-t{border-top:1px solid!important}.border-white\/10{border-color:rgba(255,255,255,.1)!important}.text-xs{font-size:.75rem!important}.text-slate-500{color:#64748b!important}.text-emerald-300{color:#6ee7b7!important}
+.eqy-v4-root,.eqy-v4-page,.eqy-v4-nav,.eqy-v4-hero,.eqy-v4-dashboard,.eqy-license-list,.eqy-product-screen{font-family:Inter,sans-serif!important;}
+.eqy-v4-brand img,.eqy-v4-chip{object-fit:contain!important;}
+.eqy-v4-brand img{width:42px!important;height:42px!important;max-width:42px!important;max-height:42px!important;}
+.eqy-v4-chip{width:34%!important;max-width:220px!important;}
+button{cursor:pointer!important}button:disabled{opacity:.55!important;cursor:not-allowed!important}
+input,select,textarea{font:inherit!important;color:#fff!important;}
