@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 
-type PageId = 'home' | 'pricing' | 'download' | 'login' | 'dashboard' | 'changelog'
+type PageId = 'home' | 'pricing' | 'download' | 'login' | 'dashboard' | 'changelog' | 'admin'
 type User = { id: number; email: string; created_at?: string }
 type License = {
+  id?: number
   key: string
   plan_id: string
   status: string
@@ -12,6 +13,24 @@ type License = {
   created_at?: string | null
   last_verified_at?: string | null
   is_active?: boolean
+}
+
+type HwidRequest = {
+  id: number
+  license_id?: number | null
+  license_key?: string | null
+  plan_id?: string | null
+  email?: string | null
+  reason?: string | null
+  status: string
+  created_at: string
+  reviewed_at?: string | null
+}
+
+type AdminData = {
+  users: Array<{ id: number; email: string; created_at: string; license_count?: number }>
+  licenses: Array<{ id: number; key: string; email?: string | null; plan_id: string; status: string; hwid?: string | null; expires_at?: string | null; premium: boolean; created_at: string }>
+  hwidRequests: HwidRequest[]
 }
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
@@ -64,6 +83,16 @@ function App() {
   const [passwordOpen, setPasswordOpen] = useState(false)
   const [busy, setBusy] = useState(false)
   const [hwidPopup, setHwidPopup] = useState(false)
+  const [hwidReason, setHwidReason] = useState('')
+  const [hwidRequests, setHwidRequests] = useState<HwidRequest[]>([])
+  const [adminSecret, setAdminSecret] = useState('')
+  const [adminToken, setAdminToken] = useState(localStorage.getItem('eqy_admin_token') || '')
+  const [adminData, setAdminData] = useState<AdminData | null>(null)
+  const [adminBusy, setAdminBusy] = useState(false)
+  const [adminCreateEmail, setAdminCreateEmail] = useState('')
+  const [adminCreatePlan, setAdminCreatePlan] = useState('standard_lifetime')
+  const [adminCreateDays, setAdminCreateDays] = useState('')
+  const [adminCreatePremium, setAdminCreatePremium] = useState(false)
 
   const isLoggedIn = Boolean(token && user)
   const activeLicenses = licenses.filter((license) => license.is_active ?? (license.status === 'active' && (!license.expires_at || new Date(license.expires_at) > new Date())))
@@ -90,17 +119,23 @@ function App() {
       const data = await api('/api/auth/me', { headers: authHeaders })
       setUser(data.user)
       setLicenses(data.licenses || [])
+      setHwidRequests(data.hwidRequests || [])
     } catch {
       localStorage.removeItem('eqy_token')
       setToken('')
       setUser(null)
       setLicenses([])
+      setHwidRequests([])
     }
   }
 
   useEffect(() => {
     void loadMe()
   }, [token])
+
+  useEffect(() => {
+    if (window.location.pathname === '/admin') setPage('admin')
+  }, [])
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -157,6 +192,7 @@ function App() {
     setToken('')
     setUser(null)
     setLicenses([])
+    setHwidRequests([])
     setPage('home')
   }
 
@@ -238,10 +274,85 @@ function App() {
   const requestHwidReset = async () => {
     if (!primaryLicense?.key) { setMessage('No license selected.'); return }
     try {
-      await api('/api/license/hwid-reset-request', { method: 'POST', headers: authHeaders, body: JSON.stringify({ key: primaryLicense.key, reason: 'Requested from account dashboard.' }) })
-      setMessage('HWID reset request sent. Open Discord if you need faster support.')
+      await api('/api/license/hwid-reset-request', { method: 'POST', headers: authHeaders, body: JSON.stringify({ key: primaryLicense.key, reason: hwidReason || 'Requested from account dashboard.' }) })
+      setMessage('HWID reset request sent. You can track the status in your dashboard.')
+      setHwidReason('')
       setHwidPopup(false)
+      await loadMe()
     } catch (e) { setMessage((e as Error).message) }
+  }
+
+
+  const adminHeaders = useMemo(() => ({
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${adminToken}`,
+  }), [adminToken])
+
+  const adminLogin = async () => {
+    setAdminBusy(true)
+    try {
+      const data = await api('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ secret: adminSecret }),
+      })
+      localStorage.setItem('eqy_admin_token', data.token)
+      setAdminToken(data.token)
+      setAdminSecret('')
+      setMessage('Admin unlocked.')
+    } catch (e) {
+      setMessage((e as Error).message)
+    } finally {
+      setAdminBusy(false)
+    }
+  }
+
+  const adminLogout = () => {
+    localStorage.removeItem('eqy_admin_token')
+    setAdminToken('')
+    setAdminData(null)
+  }
+
+  const loadAdmin = async () => {
+    if (!adminToken) return
+    setAdminBusy(true)
+    try {
+      const data = await api('/api/admin/overview', { headers: adminHeaders })
+      setAdminData(data)
+    } catch (e) {
+      setMessage((e as Error).message)
+      if (String((e as Error).message).toLowerCase().includes('admin')) adminLogout()
+    } finally {
+      setAdminBusy(false)
+    }
+  }
+
+  useEffect(() => {
+    if (page === 'admin' && adminToken) void loadAdmin()
+  }, [page, adminToken])
+
+  const adminAction = async (path: string, body: Record<string, unknown> = {}) => {
+    setAdminBusy(true)
+    try {
+      const data = await api(path, { method: 'POST', headers: adminHeaders, body: JSON.stringify(body) })
+      setMessage(data.message || 'Admin action completed.')
+      await loadAdmin()
+    } catch (e) {
+      setMessage((e as Error).message)
+    } finally {
+      setAdminBusy(false)
+    }
+  }
+
+  const adminCreateLicense = async () => {
+    await adminAction('/api/admin/licenses/create', {
+      email: adminCreateEmail || null,
+      planId: adminCreatePlan,
+      days: adminCreateDays ? Number(adminCreateDays) : null,
+      premium: adminCreatePremium,
+    })
+    setAdminCreateEmail('')
+    setAdminCreateDays('')
   }
 
   const openDiscord = () => window.open('https://discord.gg/h488P4Qezd', '_blank', 'noopener,noreferrer')
@@ -500,6 +611,17 @@ function App() {
                   <button onClick={() => setHwidPopup(true)} className="eqy-v5-primary">Request HWID Reset</button>
                   <button onClick={openDiscord} className="eqy-v5-ghost">Support</button>
                 </div>
+                {hwidRequests.length > 0 && (
+                  <div className="eqy-mini-list">
+                    <h4>Reset request status</h4>
+                    {hwidRequests.slice(0, 3).map((req) => (
+                      <div key={req.id}>
+                        <strong>{req.status.toUpperCase()}</strong>
+                        <span>{req.reason || 'No reason'} • {formatDate(req.created_at)}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -531,6 +653,123 @@ function App() {
           </section>
         )}
 
+
+        {page === 'admin' && (
+          <section className="eqy-v5-page eqy-admin-page">
+            <div className="eqy-account-hero">
+              <div>
+                <div className="eqy-v5-kicker">ADMIN PANEL</div>
+                <h2>EQY Admin<br />Command Center</h2>
+                <p>Manage users, licenses and HWID reset requests directly from the site. This panel is protected by your Render ADMIN_SECRET.</p>
+                <div className="eqy-account-badges">
+                  <span>{adminToken ? 'Admin Authenticated' : 'Locked'}</span>
+                  <span>HWID Approval</span>
+                  <span>License Control</span>
+                </div>
+              </div>
+              <div className="eqy-account-orb">
+                <span>ADMIN</span>
+                <strong>{adminToken ? 'ON' : 'LOCK'}</strong>
+                <em>{adminData ? `${adminData.hwidRequests.filter((r) => r.status === 'pending').length} pending` : 'Secure access'}</em>
+              </div>
+            </div>
+
+            {!adminToken ? (
+              <div className="eqy-v5-auth-wrap">
+                <section className="eqy-v5-auth">
+                  <div className="eqy-v5-kicker">ADMIN SECRET</div>
+                  <h2>Unlock panel</h2>
+                  <p>Enter the same password you set in Render as ADMIN_SECRET.</p>
+                  <input type="password" value={adminSecret} onChange={(e) => setAdminSecret(e.target.value)} placeholder="ADMIN_SECRET" />
+                  <button disabled={adminBusy} onClick={() => void adminLogin()} className="eqy-v5-primary">Enter Admin</button>
+                </section>
+              </div>
+            ) : (
+              <>
+                <div className="eqy-dashboard-buttons eqy-admin-toolbar">
+                  <button disabled={adminBusy} onClick={() => void loadAdmin()} className="eqy-v5-primary">Refresh</button>
+                  <button onClick={adminLogout} className="eqy-v5-ghost">Logout Admin</button>
+                  <button onClick={() => setPage('dashboard')} className="eqy-v5-ghost">Back to Account</button>
+                </div>
+
+                <div className="eqy-account-grid eqy-admin-stats">
+                  <div className="eqy-account-card"><div className="eqy-card-head"><span>Users</span><em>Total</em></div><h3>{adminData?.users.length || 0}</h3><p>Registered EQY accounts.</p></div>
+                  <div className="eqy-account-card"><div className="eqy-card-head"><span>Licenses</span><em>Total</em></div><h3>{adminData?.licenses.length || 0}</h3><p>Generated and manually created keys.</p></div>
+                  <div className="eqy-account-card"><div className="eqy-card-head"><span>HWID Requests</span><em>Pending</em></div><h3>{adminData?.hwidRequests.filter((r) => r.status === 'pending').length || 0}</h3><p>Requests waiting for approval.</p></div>
+                </div>
+
+                <div className="eqy-account-wide">
+                  <div className="eqy-account-card">
+                    <div className="eqy-card-head"><span>HWID Reset Requests</span><em>Approve / Decline</em></div>
+                    <div className="eqy-admin-list wide">
+                      {adminData?.hwidRequests.length ? adminData.hwidRequests.map((req) => (
+                        <div key={req.id}>
+                          <strong>{req.email || 'Unknown user'} • {req.status.toUpperCase()}</strong>
+                          <span>License: {req.license_key || 'N/A'} • Plan: {req.plan_id || 'N/A'}</span>
+                          <span>Reason: {req.reason || 'No reason provided.'}</span>
+                          <span>Created: {formatDate(req.created_at)}{req.reviewed_at ? ` • Reviewed: ${formatDate(req.reviewed_at)}` : ''}</span>
+                          {req.status === 'pending' && (
+                            <section>
+                              <button disabled={adminBusy} onClick={() => void adminAction(`/api/admin/hwid-requests/${req.id}/approve`)} className="eqy-v5-primary">Approve + Reset HWID</button>
+                              <button disabled={adminBusy} onClick={() => void adminAction(`/api/admin/hwid-requests/${req.id}/decline`)} className="eqy-v5-ghost">Decline</button>
+                            </section>
+                          )}
+                        </div>
+                      )) : <p>No HWID requests yet.</p>}
+                    </div>
+                  </div>
+
+                  <div className="eqy-account-card">
+                    <div className="eqy-card-head"><span>Create License</span><em>Manual</em></div>
+                    <h3>Generate key</h3>
+                    <p>Create a license manually and optionally link it to an existing user email.</p>
+                    <div className="eqy-password-panel">
+                      <input value={adminCreateEmail} onChange={(e) => setAdminCreateEmail(e.target.value)} placeholder="User email optional" />
+                      <select value={adminCreatePlan} onChange={(e) => setAdminCreatePlan(e.target.value)}>
+                        {[...standardPlans, ...premiumPlans].map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+                      </select>
+                      <input value={adminCreateDays} onChange={(e) => setAdminCreateDays(e.target.value)} placeholder="Days optional, empty = lifetime" />
+                      <label className="eqy-admin-check"><input type="checkbox" checked={adminCreatePremium} onChange={(e) => setAdminCreatePremium(e.target.checked)} /> Premium access</label>
+                      <button disabled={adminBusy} onClick={() => void adminCreateLicense()} className="eqy-v5-primary">Create License</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="eqy-account-wide">
+                  <div className="eqy-account-card">
+                    <div className="eqy-card-head"><span>Licenses</span><em>{adminData?.licenses.length || 0}</em></div>
+                    <div className="eqy-admin-list wide">
+                      {adminData?.licenses.map((lic) => (
+                        <div key={lic.id}>
+                          <strong>{lic.key}</strong>
+                          <span>{lic.email || 'Unlinked'} • {lic.plan_id} • {lic.status} • {lic.premium ? 'Premium' : 'Standard'}</span>
+                          <span>HWID: {lic.hwid || 'Not bound'} • Expires: {formatDate(lic.expires_at)}</span>
+                          <section>
+                            <button disabled={adminBusy} onClick={() => void adminAction(`/api/admin/licenses/${lic.id}/reset-hwid`)} className="eqy-v5-ghost">Reset HWID</button>
+                            <button disabled={adminBusy} onClick={() => void adminAction(`/api/admin/licenses/${lic.id}/revoke`)} className="eqy-v5-ghost">Revoke</button>
+                          </section>
+                        </div>
+                      )) || <p>No licenses found.</p>}
+                    </div>
+                  </div>
+
+                  <div className="eqy-account-card">
+                    <div className="eqy-card-head"><span>Users</span><em>{adminData?.users.length || 0}</em></div>
+                    <div className="eqy-admin-list">
+                      {adminData?.users.map((u) => (
+                        <div key={u.id}>
+                          <strong>{u.email}</strong>
+                          <span>ID: {u.id} • Licenses: {u.license_count || 0} • Joined: {formatDate(u.created_at)}</span>
+                        </div>
+                      )) || <p>No users found.</p>}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+          </section>
+        )}
+
         {page === 'changelog' && (
           <section className="eqy-v5-page">
             <div className="eqy-v5-section-title left"><span>UPDATES</span><h2>Changelog</h2></div>
@@ -555,7 +794,7 @@ function App() {
 
       {hwidPopup && (
         <div className="eqy-v5-modal">
-          <div><div className="eqy-v5-kicker">HWID RESET</div><h2>Request device reset</h2><p>This sends a reset request for your current license. Use it only when you changed PC or reinstalled Windows.</p><section><button onClick={() => void requestHwidReset()} className="eqy-v5-primary">Send Request</button><button onClick={() => setHwidPopup(false)} className="eqy-v5-ghost">Close</button></section></div>
+          <div><div className="eqy-v5-kicker">HWID RESET</div><h2>Request device reset</h2><p>This sends a reset request for your current license. Use it only when you changed PC or reinstalled Windows.</p><div className="eqy-password-panel"><textarea value={hwidReason} onChange={(e) => setHwidReason(e.target.value)} placeholder="Reason, for example: changed PC, reinstalled Windows, upgraded motherboard..." /></div><section><button onClick={() => void requestHwidReset()} className="eqy-v5-primary">Send Request</button><button onClick={() => setHwidPopup(false)} className="eqy-v5-ghost">Close</button></section></div>
         </div>
       )}
 
