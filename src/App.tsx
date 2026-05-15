@@ -95,7 +95,8 @@ function App() {
 
   const isLoggedIn = Boolean(token && user)
   const activeLicenses = licenses.filter((license) => license.is_active ?? (license.status === 'active' && (!license.expires_at || new Date(license.expires_at) > new Date())))
-  const primaryLicense = activeLicenses[0] || licenses[0]
+  const visibleLicenses = activeLicenses
+  const primaryLicense = activeLicenses[0] || null
   const premiumUnlocked = activeLicenses.some((license) => license.premium)
   const memberTier = premiumUnlocked ? 'Premium Member' : activeLicenses.length ? 'Standard Member' : 'Free Account'
   const passwordStrength = newPassword.length >= 12 ? 'Strong' : newPassword.length >= 8 ? 'Good' : newPassword.length >= 1 ? 'Weak' : 'None'
@@ -544,7 +545,7 @@ function App() {
                 <div className="eqy-account-badges">
                   <span>{memberTier}</span>
                   <span>{activeLicenses.length ? 'License Active' : 'No Active License'}</span>
-                  <span>{primaryLicense?.hwid ? 'HWID Bound' : 'HWID Ready'}</span>
+                  <span>{activeLicenses.length ? (primaryLicense?.hwid ? 'HWID Bound' : 'HWID Ready') : 'No HWID'}</span>
                 </div>
               </div>
               <div className="eqy-account-orb">
@@ -646,14 +647,14 @@ function App() {
               </div>
 
               <div className="eqy-account-card">
-                <div className="eqy-card-head"><span>Your Licenses</span><em>{licenses.length}</em></div>
+                <div className="eqy-card-head"><span>Your Licenses</span><em>{visibleLicenses.length}</em></div>
                 <div className="eqy-v5-license-list pro">
-                  {licenses.length ? licenses.map((license) => (
+                  {visibleLicenses.length ? visibleLicenses.map((license) => (
                     <div key={license.key}>
                       <strong>{license.key}</strong>
-                      <span>{license.plan_id} • {license.status} • {formatDate(license.expires_at)}</span>
+                      <span>{license.plan_id} • active • {formatDate(license.expires_at)}</span>
                     </div>
-                  )) : <p>No licenses yet. Buy a plan to generate one automatically.</p>}
+                  )) : <p>No active licenses. Buy a plan or activate a valid key to unlock protected downloads.</p>}
                 </div>
               </div>
             </div>
