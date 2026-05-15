@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import './App.css'
 
 type PageId = 'home' | 'pricing' | 'download' | 'login' | 'dashboard' | 'changelog' | 'admin'
 type User = { id: number; email: string; created_at?: string }
@@ -167,7 +168,7 @@ function App() {
     }
   }, [token])
 
-  const requireLoginAction = (callback?: () => void) => {
+  const requireLoginAction = (callback?: () => void | Promise<void>) => {
     if (!token) {
       setLoginRequiredPopup(true)
       return
