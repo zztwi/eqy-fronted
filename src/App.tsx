@@ -36,6 +36,7 @@ function App() {
   const [licenses, setLicenses] = useState<License[]>([])
   const [message, setMessage] = useState('')
   const [loginRequiredPopup, setLoginRequiredPopup] = useState(false)
+  const [licenseRequiredPopup, setLicenseRequiredPopup] = useState(false)
   const [hwidPopup, setHwidPopup] = useState(false)
 
   const isLoggedIn = Boolean(token && user)
@@ -159,8 +160,36 @@ function App() {
   }
 
   const protectedDownload = (kind: 'exe' | 'msi') => {
-    requireLoginAction(() => {
-      window.location.href = `${API_URL}/api/download/${kind}?token=${encodeURIComponent(token)}`
+    requireLoginAction(async () => {
+      try {
+        const url = `${API_URL}/api/download/${kind}?token=${encodeURIComponent(token)}`
+        const response = await fetch(url)
+
+        if (!response.ok) {
+          const data = await response.json().catch(() => ({}))
+          const error = String(data.error || 'Download failed.')
+
+          if (error.toLowerCase().includes('license')) {
+            setLicenseRequiredPopup(true)
+            return
+          }
+
+          setMessage(error)
+          return
+        }
+
+        const blob = await response.blob()
+        const objectUrl = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = objectUrl
+        link.download = kind === 'msi' ? 'eqy-tweak-installer.msi' : 'eqy-tweak-setup.exe'
+        document.body.appendChild(link)
+        link.click()
+        link.remove()
+        window.URL.revokeObjectURL(objectUrl)
+      } catch (e) {
+        setMessage((e as Error).message || 'Download failed.')
+      }
     })
   }
 
@@ -377,6 +406,29 @@ function App() {
       {loginRequiredPopup && (
         <div className="eqy-v5-modal">
           <div><div className="eqy-v5-kicker">LOGIN REQUIRED</div><h2>You must login first</h2><p>Before downloading, buying or opening protected actions, login or create an account.</p><section><button onClick={() => { setLoginRequiredPopup(false); setPage('login') }} className="eqy-v5-primary">Login</button><button onClick={() => setLoginRequiredPopup(false)} className="eqy-v5-ghost">Close</button></section></div>
+        </div>
+      )}
+
+
+      {licenseRequiredPopup && (
+        <div className="eqy-v5-modal">
+          <div>
+            <div className="eqy-v5-kicker">LICENSE REQUIRED</div>
+            <h2>Active license needed</h2>
+            <p>You need an active EQY license to access protected downloads. Choose a plan, complete checkout and the download will unlock automatically.</p>
+            <section>
+              <button
+                onClick={() => {
+                  setLicenseRequiredPopup(false)
+                  setPage('pricing')
+                }}
+                className="eqy-v5-primary"
+              >
+                View Plans
+              </button>
+              <button onClick={() => setLicenseRequiredPopup(false)} className="eqy-v5-ghost">Close</button>
+            </section>
+          </div>
         </div>
       )}
 
