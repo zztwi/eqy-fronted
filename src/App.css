@@ -1,6 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&family=Sora:wght@600;700;800&display=swap');
-@import "tailwindcss";
-
 * { box-sizing: border-box; }
 html, body, #root { min-height: 100%; margin: 0; background: #02040a; font-family: Inter, sans-serif; }
 button, input { font: inherit; }
@@ -154,3 +152,95 @@ h1, h2, h3, strong { font-family: Sora, Inter, sans-serif; }
 }
 
 .eqy-v5-primary, .eqy-v5-ghost, .eqy-v5-outline, .eqy-v5-cta, .eqy-v5-sign { position: relative; z-index: 10; pointer-events: auto; }
+
+/* Premium account dashboard merge: keeps exact blue world design, upgrades only account dashboard */
+.eqy-account-page { padding-bottom: 48px; }
+.eqy-account-hero { position:relative; overflow:hidden; border:1px solid rgba(86,158,255,.28); background:linear-gradient(135deg,rgba(7,18,44,.72),rgba(2,7,19,.86)); backdrop-filter:blur(28px); border-radius:18px; padding:34px; display:grid; gap:28px; grid-template-columns:1fr; box-shadow:0 45px 160px rgba(0,0,0,.52),0 0 120px rgba(10,115,255,.18),inset 0 1px 0 rgba(255,255,255,.08); }
+.eqy-account-hero::before { content:""; position:absolute; inset:-46% -22% auto auto; width:560px; height:560px; border-radius:999px; background:radial-gradient(circle,rgba(56,189,248,.22),rgba(29,78,216,.08) 45%,transparent 70%); filter:blur(3px); pointer-events:none; }
+.eqy-account-hero h2 { position:relative; margin:18px 0 0; font-size:clamp(42px,5vw,78px); line-height:.9; letter-spacing:-.075em; font-weight:900; }
+.eqy-account-hero p { position:relative; max-width:760px; color:#a7b9d3; line-height:1.85; margin-top:18px; }
+@media(min-width:900px){ .eqy-account-hero{grid-template-columns:1fr 260px; align-items:center;} }
+.eqy-account-badges { position:relative; margin-top:24px; display:flex; flex-wrap:wrap; gap:10px; }
+.eqy-account-badges span { border:1px solid rgba(147,197,253,.26); background:rgba(10,115,255,.14); color:#d9efff; border-radius:999px; padding:9px 12px; font-size:11px; font-weight:900; letter-spacing:.12em; text-transform:uppercase; }
+.eqy-account-orb { position:relative; justify-self:center; width:220px; height:220px; border-radius:999px; display:flex; flex-direction:column; align-items:center; justify-content:center; background:radial-gradient(circle at 35% 25%,rgba(255,255,255,.22),rgba(10,115,255,.28) 28%,rgba(5,15,35,.8) 62%,rgba(2,4,10,.96)); border:1px solid rgba(147,197,253,.36); box-shadow:0 0 85px rgba(10,115,255,.32), inset 0 0 60px rgba(255,255,255,.05); animation:eqyPulse 4s ease-in-out infinite; }
+.eqy-account-orb span { color:#9bd6ff; font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.26em; font-weight:900; }
+.eqy-account-orb strong { font-size:48px; letter-spacing:-.07em; margin-top:8px; }
+.eqy-account-orb em { color:#93a8c8; font-size:12px; font-style:normal; margin-top:5px; }
+.eqy-account-grid { margin-top:22px; display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px; }
+.eqy-account-wide { margin-top:18px; display:grid; grid-template-columns:1fr; gap:18px; }
+@media(min-width:960px){ .eqy-account-wide{grid-template-columns:1.35fr .9fr;} }
+.eqy-account-card { position:relative; overflow:hidden; border:1px solid rgba(103,166,255,.22); background:linear-gradient(180deg,rgba(4,16,42,.72),rgba(1,5,15,.74)); backdrop-filter:blur(20px); border-radius:16px; padding:24px; box-shadow:0 30px 120px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.08); }
+.eqy-account-card::after { content:""; position:absolute; inset:auto -20% -45% -20%; height:170px; background:radial-gradient(circle,rgba(10,115,255,.20),transparent 68%); pointer-events:none; }
+.eqy-card-head { position:relative; z-index:1; display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px; }
+.eqy-card-head span { color:#9cd8ff; font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.2em; text-transform:uppercase; font-weight:900; }
+.eqy-card-head em { border:1px solid rgba(147,197,253,.24); background:rgba(10,115,255,.15); color:#dcecff; border-radius:999px; padding:6px 10px; font-size:10px; font-style:normal; font-weight:900; letter-spacing:.12em; text-transform:uppercase; }
+.eqy-account-card h3 { position:relative; z-index:1; margin:0; font-size:26px; letter-spacing:-.055em; overflow-wrap:anywhere; }
+.eqy-account-card p { position:relative; z-index:1; color:#a9b7cb; line-height:1.75; margin:10px 0 0; }
+.eqy-license-meter { position:relative; z-index:1; height:12px; border-radius:999px; background:rgba(255,255,255,.07); overflow:hidden; margin:20px 0; border:1px solid rgba(255,255,255,.08); }
+.eqy-license-meter i { display:block; height:100%; border-radius:999px; background:linear-gradient(90deg,#005eff,#0a73ff,#38bdf8); box-shadow:0 0 24px rgba(56,189,248,.45); }
+.eqy-license-stats { position:relative; z-index:1; display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+.eqy-license-stats div { border:1px solid rgba(255,255,255,.09); background:rgba(255,255,255,.04); border-radius:14px; padding:14px; }
+.eqy-license-stats span { display:block; color:#8299bc; font-size:12px; }
+.eqy-license-stats strong { display:block; margin-top:7px; font-size:16px; color:#eaf4ff; overflow:hidden; text-overflow:ellipsis; }
+.eqy-input-row { position:relative; z-index:1; display:flex; gap:12px; margin-top:18px; }
+.eqy-input-row input, .eqy-password-panel input { width:100%; min-height:54px; border-radius:12px; border:1px solid rgba(110,170,255,.24); background:rgba(3,8,20,.42); padding:0 16px; outline:none; color:white; }
+.eqy-input-row input:focus, .eqy-password-panel input:focus { border-color:rgba(10,115,255,.72); box-shadow:0 0 0 4px rgba(10,115,255,.14); }
+@media(max-width:720px){ .eqy-input-row{flex-direction:column;} }
+.eqy-dashboard-buttons { position:relative; z-index:1; display:flex; flex-wrap:wrap; gap:12px; margin-top:18px; }
+.eqy-password-panel { position:relative; z-index:1; display:grid; gap:11px; margin-top:16px; }
+.eqy-strength { height:9px; border-radius:999px; overflow:hidden; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.08); }
+.eqy-strength i { display:block; height:100%; width:18%; background:linear-gradient(90deg,#ef4444,#f97316); box-shadow:0 0 20px rgba(239,68,68,.35); }
+.eqy-strength.good i { width:60%; background:linear-gradient(90deg,#f59e0b,#38bdf8); }
+.eqy-strength.strong i { width:100%; background:linear-gradient(90deg,#005eff,#38bdf8,#22c55e); }
+.eqy-benefit-grid { position:relative; z-index:1; display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; }
+.eqy-benefit-grid div { border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.045); border-radius:14px; padding:16px; transition:.25s ease; }
+.eqy-benefit-grid div:hover { transform:translateY(-4px); border-color:rgba(10,115,255,.42); box-shadow:0 20px 60px rgba(10,115,255,.14); }
+.eqy-benefit-grid div.locked { opacity:.48; filter:saturate(.5); }
+.eqy-benefit-grid span { display:inline-flex; margin-bottom:11px; border-radius:999px; background:rgba(10,115,255,.16); color:#93d4ff; padding:4px 8px; font-size:9px; font-weight:900; letter-spacing:.14em; }
+.eqy-benefit-grid strong { display:block; color:#e5f1ff; font-size:14px; }
+.eqy-v5-license-list.pro { margin-top:0; padding:0; border:0; background:transparent; box-shadow:none; }
+.eqy-v5-license-list.pro div { border-radius:12px; border:1px solid rgba(255,255,255,.09); background:rgba(255,255,255,.04); margin-bottom:10px; }
+.eqy-v5-primary:disabled { opacity:.6; cursor:not-allowed; filter:saturate(.6); }
+
+@media (max-width: 800px) {
+  .eqy-account-hero { padding: 24px; }
+  .eqy-account-orb { width: 180px; height: 180px; }
+  .eqy-account-orb strong { font-size: 40px; }
+}
+
+
+/* Admin panel + HWID request workflow */
+.eqy-admin-page { padding-bottom: 48px; }
+.eqy-admin-toolbar { margin: 22px 0 0; }
+.eqy-admin-stats { margin-top: 22px; }
+.eqy-admin-list { position: relative; z-index: 1; display: grid; gap: 10px; max-height: 430px; overflow: auto; padding-right: 4px; }
+.eqy-admin-list.wide { max-height: 680px; }
+.eqy-admin-list > div { border: 1px solid rgba(255,255,255,.09); background: rgba(255,255,255,.04); border-radius: 14px; padding: 14px; }
+.eqy-admin-list strong { display: block; color: #f2f8ff; overflow-wrap: anywhere; }
+.eqy-admin-list span { display: block; margin-top: 6px; color: #96a9c5; font-size: 13px; line-height: 1.55; overflow-wrap: anywhere; }
+.eqy-admin-list section { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.eqy-admin-list section button { min-height: 40px; padding: 0 14px; font-size: 12px; }
+.eqy-admin-check { display: flex; align-items: center; gap: 10px; color: #cfe5ff; font-size: 13px; font-weight: 800; }
+.eqy-admin-check input { width: 18px; height: 18px; accent-color: #0a73ff; }
+.eqy-mini-list { position: relative; z-index: 1; margin-top: 18px; display: grid; gap: 10px; }
+.eqy-mini-list h4 { margin: 0 0 4px; color: #dcecff; font-size: 15px; letter-spacing: -.02em; }
+.eqy-mini-list div { border: 1px solid rgba(255,255,255,.09); background: rgba(255,255,255,.04); border-radius: 12px; padding: 12px; }
+.eqy-mini-list strong { display: block; color: #e9f5ff; font-size: 13px; overflow-wrap: anywhere; }
+.eqy-mini-list span { display: block; margin-top: 5px; color: #9dacbf; font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+.eqy-password-panel select,
+.eqy-password-panel textarea {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(110,170,255,.24);
+  background: rgba(3,8,20,.74);
+  color: white;
+  outline: none;
+  padding: 14px 16px;
+}
+.eqy-password-panel select { min-height: 54px; }
+.eqy-password-panel textarea { min-height: 128px; resize: vertical; font-family: Inter, sans-serif; line-height: 1.55; }
+.eqy-password-panel select:focus,
+.eqy-password-panel textarea:focus {
+  border-color: rgba(10,115,255,.72);
+  box-shadow: 0 0 0 4px rgba(10,115,255,.14);
+}
