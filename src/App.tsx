@@ -80,6 +80,12 @@ function App() {
   const [message, setMessage] = useState('')
   const [loginRequiredPopup, setLoginRequiredPopup] = useState(false)
   const [licenseRequiredPopup, setLicenseRequiredPopup] = useState(false)
+  const [licensePopup, setLicensePopup] = useState({
+  open: false,
+  type: 'success',
+  title: '',
+  message: '',
+})
   const [passwordOpen, setPasswordOpen] = useState(false)
   const [busy, setBusy] = useState(false)
   const [hwidPopup, setHwidPopup] = useState(false)
@@ -257,17 +263,25 @@ const activateLicense = async () => {
 
       await loadMe()
 
-      window.alert('License activated successfully. Your license is now connected to your account.')
+setLicensePopup({
+  open: true,
+  type: 'success',
+  title: 'License Activated',
+  message: 'Your EQY license has been connected successfully.',
+})
     } catch (e) {
       const errorMessage = (e as Error).message || 'License activation failed.'
 
       setMessage(errorMessage)
 
-      window.alert(
-        errorMessage.toLowerCase().includes('inactive')
-          ? 'License inactive. This license is disabled, revoked, expired, or not usable.'
-          : errorMessage
-      )
+      setLicensePopup({
+        open: true,
+        type: 'error',
+        title: 'Activation Failed',
+        message: errorMessage.toLowerCase().includes('inactive')
+          ? 'This license is inactive, revoked, expired, or not usable.'
+          : errorMessage,
+            })
     } finally {
       setBusy(false)
     }
@@ -836,6 +850,33 @@ const activateLicense = async () => {
           <div><div className="eqy-v5-kicker">HWID RESET</div><h2>Request device reset</h2><p>This sends a reset request for your current license. Use it only when you changed PC or reinstalled Windows.</p><div className="eqy-password-panel"><textarea value={hwidReason} onChange={(e) => setHwidReason(e.target.value)} placeholder="Reason, for example: changed PC, reinstalled Windows, upgraded motherboard..." /></div><section><button onClick={() => void requestHwidReset()} className="eqy-v5-primary">Send Request</button><button onClick={() => setHwidPopup(false)} className="eqy-v5-ghost">Close</button></section></div>
         </div>
       )}
+
+      {licensePopup.open && (
+  <div className="eqy-v5-modal">
+    <div>
+      <div className="eqy-v5-kicker">
+        {licensePopup.type === 'success'
+          ? 'LICENSE ACTIVATED'
+          : 'LICENSE ERROR'}
+      </div>
+
+      <h2>{licensePopup.title}</h2>
+
+      <p>{licensePopup.message}</p>
+
+      <section>
+        <button
+          onClick={() =>
+            setLicensePopup((prev) => ({ ...prev, open: false }))
+          }
+          className="eqy-v5-primary"
+        >
+          Continue
+        </button>
+      </section>
+    </div>
+  </div>
+)}
 
       <footer className="eqy-v5-footer">
         <span>© 2026 EQY Tweak</span>
