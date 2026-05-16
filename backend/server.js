@@ -465,14 +465,14 @@ app.get('/health', (req, res) => {
   })
 })
 
-app.post('/activate', async (req, res) => {
+app.post('/activate', (req, res, next) => {
   req.url = '/api/license/activate'
-  app._router.handle(req, res)
+  app.handle(req, res, next)
 })
 
-app.post('/verify', async (req, res) => {
+app.post('/verify', (req, res, next) => {
   req.url = '/api/license/verify'
-  app._router.handle(req, res)
+  app.handle(req, res, next)
 })
 
 await initDb()
