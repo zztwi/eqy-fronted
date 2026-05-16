@@ -205,26 +205,48 @@ app.post('/api/auth/change-password', auth, authLimiter, asyncHandler(async (req
   res.json({ ok: true, message: 'Password updated successfully.' })
 }))
 
-app.post('/api/license/activate', auth, asyncHandler(async (req, res) => {
+app.post('/api/license/activate', asyncHandler(async (req, res) => {
   const key = String(req.body.key || '').trim().toUpperCase()
-  if (!key) return res.status(400).json({ error: 'License key required.' })
+  const hwid = String(req.body.hwid || '').trim()
+  const appVersion = req.body.appVersion || null
+
+  if (!key) return res.status(400).json({ ok: false, error: 'License key required.' })
 
   const found = await query('SELECT * FROM licenses WHERE key = $1', [key])
-  if (!found.rows.length) return res.status(404).json({ error: 'License not found.' })
+  if (!found.rows.length) return res.status(404).json({ ok: false, error: 'License not found.' })
 
   const license = found.rows[0]
-  if (license.status !== 'active') return res.status(403).json({ error: 'License is not active.' })
+
+  if (license.status !== 'active') return res.status(403).json({ ok: false, error: 'License inactive.' })
+
   if (license.expires_at && new Date(license.expires_at) < new Date()) {
     await query('UPDATE licenses SET status = $1 WHERE id = $2', ['expired', license.id])
-    return res.status(403).json({ error: 'License expired.' })
+    return res.status(403).json({ ok: false, error: 'License expired.' })
   }
 
-  if (license.user_id && Number(license.user_id) !== Number(req.user.id)) {
-    return res.status(409).json({ error: 'This license is already linked to another account.' })
+  if (license.hwid && hwid && license.hwid !== hwid) {
+    return res.status(403).json({ ok: false, error: 'License already used on another PC.' })
   }
 
-  await query('UPDATE licenses SET user_id = $1 WHERE id = $2', [req.user.id, license.id])
-  res.json({ ok: true, message: 'License activated on your account.' })
+  if (!license.hwid && hwid) {
+    await query(
+      'UPDATE licenses SET hwid = $1, last_verified_at = NOW(), last_app_version = $2 WHERE id = $3',
+      [hwid, appVersion, license.id]
+    )
+  } else {
+    await query(
+      'UPDATE licenses SET last_verified_at = NOW(), last_app_version = $1 WHERE id = $2',
+      [appVersion, license.id]
+    )
+  }
+
+  res.json({
+    ok: true,
+    status: license.status,
+    plan: license.plan_id,
+    premium: license.premium,
+    expires_at: license.expires_at
+  })
 }))
 
 app.post('/api/license/hwid-reset-request', auth, asyncHandler(async (req, res) => {
