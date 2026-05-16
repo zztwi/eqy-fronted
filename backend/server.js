@@ -465,5 +465,15 @@ app.get('/health', (req, res) => {
   })
 })
 
+app.post('/activate', async (req, res) => {
+  req.url = '/api/license/activate'
+  app._router.handle(req, res)
+})
+
+app.post('/verify', async (req, res) => {
+  req.url = '/api/license/verify'
+  app._router.handle(req, res)
+})
+
 await initDb()
 app.listen(PORT, () => console.log(`EQY backend running on ${PORT}`))
