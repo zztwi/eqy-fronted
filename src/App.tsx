@@ -49,13 +49,6 @@ const premiumPlans = [
   { id: 'premium_lifetime', name: 'LIFETIME PREMIUM', price: '50€', desc: 'Permanent premium tweak access.', badge: 'ELITE' },
 ]
 
-const stats = [
-  ['♙', '50K+', 'Active Users'],
-  ['⊕', '98%', 'Satisfaction Rate'],
-  ['⚙', '24/7', 'Customer Support'],
-  ['◌', '99.9%', 'Uptime'],
-]
-
 function formatDate(value?: string | null) {
   if (!value) return 'Lifetime'
   return new Date(value).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
@@ -481,12 +474,6 @@ setLicensePopup({
                   ))}
                 </div>
               </div>
-            </div>
-
-            <div className="eqy-v5-stats">
-              {stats.map(([icon, value, label]) => (
-                <div key={label}><span>{icon}</span><strong>{value}</strong><p>{label}</p></div>
-              ))}
             </div>
 
             <section className="eqy-v5-pricing-preview">
