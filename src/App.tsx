@@ -236,18 +236,43 @@ function App() {
     }
   }
 
-  const activateLicense = async () => {
-    requireLoginAction(async () => {
-      if (!licenseKey.trim()) { setMessage('Enter a license key first.'); return }
-      setBusy(true)
-      try {
-        const data = await api('/api/license/activate', { method: 'POST', headers: authHeaders, body: JSON.stringify({ key: licenseKey }) })
-        setMessage(data.message || 'License activated successfully.')
-        setLicenseKey('')
-        await loadMe()
-      } catch (e) { setMessage((e as Error).message) } finally { setBusy(false) }
-    })
-  }
+const activateLicense = async () => {
+  requireLoginAction(async () => {
+    if (!licenseKey.trim()) {
+      setMessage('Enter a license key first.')
+      return
+    }
+
+    setBusy(true)
+
+    try {
+      const data = await api('/api/license/activate', {
+        method: 'POST',
+        headers: authHeaders,
+        body: JSON.stringify({ key: licenseKey }),
+      })
+
+      setMessage(data.message || 'License activated successfully.')
+      setLicenseKey('')
+
+      await loadMe()
+
+      window.alert('License activated successfully. Your license is now connected to your account.')
+    } catch (e) {
+      const errorMessage = (e as Error).message || 'License activation failed.'
+
+      setMessage(errorMessage)
+
+      window.alert(
+        errorMessage.toLowerCase().includes('inactive')
+          ? 'License inactive. This license is disabled, revoked, expired, or not usable.'
+          : errorMessage
+      )
+    } finally {
+      setBusy(false)
+    }
+  })
+}
 
   const changePassword = async () => {
     if (!currentPassword || !newPassword) { setMessage('Fill current and new password.'); return }
