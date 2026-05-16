@@ -464,5 +464,13 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: err.message || 'Server error.' })
 })
 
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    message: 'Backend is running',
+  })
+})
+
 await initDb()
 app.listen(PORT, () => console.log(`EQY backend running on ${PORT}`))
