@@ -237,14 +237,6 @@ app.post('/api/license/activate', auth, asyncHandler(async (req, res) => {
   })
 }))
 
-  res.json({
-    ok: true,
-    status: license.status,
-    plan: license.plan_id,
-    premium: license.premium,
-    expires_at: license.expires_at
-  })
-
 app.post('/api/license/hwid-reset-request', auth, asyncHandler(async (req, res) => {
   const key = String(req.body.key || '').trim().toUpperCase()
   const reason = String(req.body.reason || '').trim().slice(0, 800)
