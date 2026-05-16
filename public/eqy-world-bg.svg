@@ -1,0 +1,39 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="planet" cx="35%" cy="34%" r="68%">
+      <stop offset="0%" stop-color="#6bbcff" stop-opacity="0.95"/>
+      <stop offset="28%" stop-color="#1769d8" stop-opacity="0.72"/>
+      <stop offset="54%" stop-color="#06245f" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#010614" stop-opacity="1"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#3ea0ff" stop-opacity="0.75"/>
+      <stop offset="45%" stop-color="#135dce" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#00102d" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#020714"/>
+      <stop offset="0.45" stop-color="#06163a"/>
+      <stop offset="1" stop-color="#02040a"/>
+    </linearGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#sky)"/>
+  <g opacity="0.55">
+    <circle cx="110" cy="80" r="1.5" fill="#7fc2ff"/><circle cx="360" cy="115" r="1.2" fill="#a7d8ff"/><circle cx="590" cy="70" r="1.1" fill="#7fc2ff"/><circle cx="850" cy="120" r="1.4" fill="#d7efff"/><circle cx="1320" cy="95" r="1.2" fill="#7fc2ff"/><circle cx="1715" cy="140" r="1.1" fill="#a7d8ff"/>
+    <circle cx="240" cy="275" r="1" fill="#7fc2ff"/><circle cx="520" cy="245" r="1.2" fill="#a7d8ff"/><circle cx="940" cy="280" r="1.6" fill="#d7efff"/><circle cx="1570" cy="265" r="1.2" fill="#7fc2ff"/><circle cx="1850" cy="240" r="1" fill="#a7d8ff"/>
+  </g>
+  <path d="M0 510 C230 375 520 442 760 345 C990 252 1228 148 1510 198 C1725 235 1840 390 1920 490 L1920 1080 L0 1080 Z" fill="#02091c" opacity="0.62"/>
+  <path d="M0 720 C220 610 450 710 650 608 C840 510 1010 522 1180 622 C1400 752 1650 680 1920 522 L1920 1080 L0 1080 Z" fill="#021332" opacity="0.88"/>
+  <path d="M0 840 C270 700 430 790 690 705 C960 615 1175 745 1370 800 C1585 862 1740 760 1920 660 L1920 1080 L0 1080 Z" fill="#010816" opacity="1"/>
+  <ellipse cx="1185" cy="300" rx="560" ry="560" fill="url(#glow)" filter="url(#blur)" opacity="0.9"/>
+  <circle cx="1260" cy="265" r="315" fill="url(#planet)" opacity="0.9"/>
+  <circle cx="1260" cy="265" r="318" fill="none" stroke="#79c8ff" stroke-opacity="0.42" stroke-width="4"/>
+  <path d="M1018 150 C1130 72 1355 15 1530 150" stroke="#9ddcff" stroke-opacity="0.32" stroke-width="3" fill="none"/>
+  <path d="M960 402 C1132 482 1390 490 1600 375" stroke="#0d54d5" stroke-opacity="0.35" stroke-width="12" fill="none"/>
+  <path d="M150 715 C430 500 670 530 930 480 C1200 425 1425 550 1720 420" stroke="#006dff" stroke-opacity="0.22" stroke-width="5" fill="none"/>
+  <g opacity="0.5">
+    <path d="M1060 325 L1125 220 L1205 320 L1150 430 Z" fill="#0b57bc" opacity="0.22"/>
+    <path d="M1360 440 L1430 330 L1530 430 L1460 540 Z" fill="#1a74ef" opacity="0.16"/>
+  </g>
+</svg>

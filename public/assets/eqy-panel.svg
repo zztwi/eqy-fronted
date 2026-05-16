@@ -1,0 +1,21 @@
+<svg width="1200" height="760" viewBox="0 0 1200 760" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="1200" height="760" rx="48" fill="#050B18"/>
+<rect x="1.5" y="1.5" width="1197" height="757" rx="46.5" stroke="url(#s)" stroke-width="3"/>
+<rect x="32" y="28" width="1136" height="68" rx="22" fill="white" fill-opacity=".045"/>
+<circle cx="72" cy="62" r="9" fill="#EF4444"/>
+<circle cx="104" cy="62" r="9" fill="#F59E0B"/>
+<circle cx="136" cy="62" r="9" fill="#22C55E"/>
+<rect x="32" y="126" width="230" height="590" rx="28" fill="white" fill-opacity=".04"/>
+<rect x="292" y="126" width="876" height="220" rx="30" fill="url(#card)"/>
+<rect x="324" y="160" width="260" height="28" rx="14" fill="white" fill-opacity=".9"/>
+<rect x="324" y="208" width="420" height="16" rx="8" fill="#93C5FD" fill-opacity=".5"/>
+<rect x="324" y="250" width="180" height="44" rx="14" fill="#2F80FF"/>
+<rect x="292" y="376" width="270" height="160" rx="26" fill="white" fill-opacity=".045"/>
+<rect x="594" y="376" width="270" height="160" rx="26" fill="white" fill-opacity=".045"/>
+<rect x="896" y="376" width="272" height="160" rx="26" fill="white" fill-opacity=".045"/>
+<rect x="292" y="566" width="876" height="150" rx="26" fill="white" fill-opacity=".035"/>
+<defs>
+<linearGradient id="s" x1="0" y1="0" x2="1200" y2="760"><stop stop-color="#38BDF8"/><stop offset=".45" stop-color="#2F80FF"/><stop offset="1" stop-color="#1D4ED8"/></linearGradient>
+<linearGradient id="card" x1="292" y1="126" x2="1168" y2="346"><stop stop-color="#2F80FF" stop-opacity=".26"/><stop offset="1" stop-color="#38BDF8" stop-opacity=".06"/></linearGradient>
+</defs>
+</svg>

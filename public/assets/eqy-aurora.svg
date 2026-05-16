@@ -1,0 +1,19 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="1600" height="1000" fill="#020611"/>
+<g filter="url(#blur1)">
+<circle cx="270" cy="230" r="250" fill="#2F80FF" fill-opacity=".38"/>
+<circle cx="1170" cy="230" r="210" fill="#38BDF8" fill-opacity=".20"/>
+<circle cx="850" cy="790" r="320" fill="#1D4ED8" fill-opacity=".25"/>
+</g>
+<path d="M0 690 C260 560 402 730 650 600 C895 472 1110 550 1600 355" stroke="url(#g1)" stroke-width="2" opacity=".55"/>
+<path d="M0 740 C300 610 420 780 710 635 C955 510 1160 605 1600 420" stroke="url(#g2)" stroke-width="1.5" opacity=".32"/>
+<g opacity=".16">
+<path d="M0 0H1600V1000H0V0Z" fill="url(#grid)"/>
+</g>
+<defs>
+<filter id="blur1" x="-200" y="-200" width="2000" height="1400" filterUnits="userSpaceOnUse"><feGaussianBlur stdDeviation="110"/></filter>
+<linearGradient id="g1" x1="0" y1="690" x2="1600" y2="355"><stop stop-color="#2F80FF" stop-opacity="0"/><stop offset=".5" stop-color="#5DAEFF"/><stop offset="1" stop-color="#38BDF8" stop-opacity="0"/></linearGradient>
+<linearGradient id="g2" x1="0" y1="740" x2="1600" y2="420"><stop stop-color="#38BDF8" stop-opacity="0"/><stop offset=".45" stop-color="#2F80FF"/><stop offset="1" stop-color="#38BDF8" stop-opacity="0"/></linearGradient>
+<pattern id="grid" width="52" height="52" patternUnits="userSpaceOnUse"><path d="M52 0H0V52" stroke="white" stroke-opacity=".28" stroke-width="1"/></pattern>
+</defs>
+</svg>
